@@ -5,6 +5,7 @@ import { Button } from "react-bootstrap";
 import { FaListAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { addToListAction } from "../redux/actions";
 
 const MainSearch = () => {
   const [query, setQuery] = useState("");
@@ -37,6 +38,8 @@ const MainSearch = () => {
     }
   };
   const dispatch = useDispatch();
+  const username = useSelector((state) => state.user.username);
+
   return (
     <Container>
       <Row>
@@ -57,17 +60,22 @@ const MainSearch = () => {
           {jobs.map((jobData) => (
             <>
               <Job key={jobData._id} data={jobData} />
-              <Button
-                onClick={() => {
-                  console.log("aggiungi lavoro");
-                  dispatch({
-                    type: "ADD_TO_LIST",
-                    payload: jobData,
-                  });
-                }}
-              >
-                aggiungi alla lista
-              </Button>
+              {username ? (
+                <Button
+                  onClick={() => {
+                    console.log("AGGIUNGI LAVORO");
+                    dispatch(addToListAction(jobData));
+                  }}
+                >
+                  aggiungi alla lista
+                </Button>
+              ) : (
+                <div>
+                  <span className="not-logged-in">
+                    effettua l'accesso per aggiungere il lavoro alla lista
+                  </span>
+                </div>
+              )}
             </>
           ))}
         </Col>
